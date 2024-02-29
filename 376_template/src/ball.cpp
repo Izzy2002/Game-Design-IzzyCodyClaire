@@ -7,31 +7,39 @@
 #include <box2d/box2d.h>
 #include <random>
 
-Ball::Ball(PhysicsWorld* physics){
+Ball::Ball(PhysicsWorld* physics, float x, float y){
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> distribution(0, 10);
 
 	// Generate a random number between 0 and RAND_MAX
-	loadImage("./assets/spinner_32.png");
+	loadImage("./assets/randombox.png");
 	// Need a body definition before we can make a body
 	bodyDef = new b2BodyDef();
 	bodyDef->type = b2_dynamicBody;
-	bodyDef->position.Set(distribution(gen) + distribution(gen) / 10.0f, - distribution(gen));
+	bodyDef->position.Set(x, y);
 	// Physics engine makes the body for us and returns a pointer to it
 	body = physics->addBody(bodyDef);
 	// Need a shape
-	b2CircleShape ballShape;
-	ballShape.m_radius=0.16f;
+	b2PolygonShape boxShape;
+	boxShape.SetAsBox(.2f,.18f);
+	// b2CircleShape ballShape;
+	// ballShape.m_radius=0.16f;
 	// Must apply a fixture.  Fixes shape and other properties to it.
-	b2FixtureDef ballFixture;
-	ballFixture.shape = &ballShape;
-	ballFixture.density = 1.0f;
-	ballFixture.friction = 0.3f;
-	ballFixture.restitution = 0.3f;
+	b2FixtureDef boxFixture;
+	boxFixture.shape = &boxShape;
+	boxFixture.density = 1.0f;
+	boxFixture.friction = 0.3f;
+	boxFixture.restitution = 0.3f;
+	// b2FixtureDef ballFixture;
+	// ballFixture.shape = &ballShape;
+	// ballFixture.density = 1.0f;
+	// ballFixture.friction = 0.3f;
+	// ballFixture.restitution = 0.3f;
 	// Make the fixture.
-	body->CreateFixture(&ballFixture);
+	// body->CreateFixture(&ballFixture);
+	body->CreateFixture(&boxFixture);
 }
 
 Ball::~Ball(){
@@ -52,12 +60,18 @@ void Ball::update(double delta){
 	for(auto event=events.begin(); event!=events.end(); ++event){
 		if(event->type == SDL_KEYDOWN){
 			if(event->key.keysym.sym == SDLK_SPACE){
-				b2Vec2 up(0.0f, 1.0f);
+				b2Vec2 up(0.0f, 0.01f);
 				b2Vec2 pos = body->GetPosition();
 				pos.x += 0.1;
 				body->ApplyLinearImpulse(up, pos, true);
-				body->ApplyTorque(10.0f, true);
+				body->ApplyTorque(5.0f, true);
 			}
+		}
+		if(event->type == SDL_MOUSEBUTTONUP){
+			b2Vec2 right(0.1f, 0.0f);
+			b2Vec2 pos = body->GetPosition();
+			pos.y -= 0.05;
+			body->ApplyLinearImpulse(right, pos, true);
 		}
 	}	
 }

@@ -1,11 +1,14 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <unistd.h>
-
 #include "LEAGUE/common_data_structures.h"
 #include "LEAGUE/engine.h"
 #include "LEAGUE/physics.h"
 #include "ball.h"
+
+float W2P = 100;
+float P2W = 0.01;
+
 
 int main(int argc, char** argv){
 	int opt;
@@ -41,8 +44,13 @@ int main(int argc, char** argv){
 	rightBox.SetAsBox(1.0f, 50.0f);
 	right->CreateFixture(&rightBox, 1.0f);
 
-	for(int i=0; i<500; ++i){
-		Ball* b = new Ball(&physics);
+	for(int i=0; i<7; ++i){
+		Ball* b = new Ball(&physics, i * P2W, -6 * P2W);
+		scene.addUpdateable(*b);
+		scene.addDrawable(*b);
+	}
+	for(int i=0; i<7; ++i){
+		Ball* b = new Ball(&physics, i * P2W, -5 * P2W);
 		scene.addUpdateable(*b);
 		scene.addDrawable(*b);
 	}

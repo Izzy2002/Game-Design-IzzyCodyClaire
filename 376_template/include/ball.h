@@ -7,7 +7,7 @@
 
 class Ball : public Drawable, public Updateable {
 	public:
-		Ball(PhysicsWorld*);
+		Ball(PhysicsWorld*, float x, float y);
 		~Ball();
 		void draw(SDL_Renderer* renderer) override;
 		void update(double delta) override;

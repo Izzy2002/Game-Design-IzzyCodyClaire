@@ -68,10 +68,35 @@ void Ball::update(double delta){
 			}
 		}
 		if(event->type == SDL_MOUSEBUTTONUP){
-			b2Vec2 right(0.1f, 0.0f);
 			b2Vec2 pos = body->GetPosition();
-			pos.y -= 0.05;
-			body->ApplyLinearImpulse(right, pos, true);
+			int temp, tempY;
+			SDL_GetMouseState(&temp, &tempY);
+			float x = (float)temp * .01;
+			float y = - (float)tempY * .01;
+			std::cout << x << ", " << y << std::endl;
+			std::cout << "Left side: " << pos.x - .2 << std::endl;
+			std::cout << "Right side: " << pos.x + .2 << std::endl;
+			std::cout << "Top side: " << pos.y +.18 << std::endl;
+			std::cout << "Bottom side: " << pos.y -.18 << std::endl;
+			if(x > pos.x - .2 && x < pos.x + .2 && y > pos.y -.18 && y < pos.y + .18){
+				std::cout << x << ", " << y << std::endl;
+				delete bodyDef;
+				SDL_DestroyTexture(texture);
+			}
+
+
+			// b2Transform t;
+			// t.SetIdentity();
+			// b2Fixture* f = body->GetFixtureList(); 
+			// b2PolygonShape* polygonShape = (b2PolygonShape*)f->GetShape();
+			// const int childCount = polygonShape->GetChildCount();
+			// for (int child = 0; child < childCount; child++){
+				
+				
+			// }
+			
+			
+			
 		}
 	}	
 }
@@ -89,6 +114,7 @@ void Ball::draw(SDL_Renderer* renderer){
 	if(result != 0){
 		std::cout << SDL_GetError() << std::endl;
 	}
+	
 }
 
 b2Body* Ball::getBody(){

@@ -49,11 +49,11 @@ int main(int argc, char** argv){
 		scene.addUpdateable(*b);
 		scene.addDrawable(*b);
 	}
-	for(int i=0; i<7; ++i){
-		Ball* b = new Ball(&physics, i * P2W, -5 * P2W);
-		scene.addUpdateable(*b);
-		scene.addDrawable(*b);
-	}
+	// for(int i=0; i<7; ++i){
+	// 	Ball* b = new Ball(&physics, i * P2W, -5 * P2W);
+	// 	scene.addUpdateable(*b);
+	// 	scene.addDrawable(*b);
+	// }
 
 	scene.addUpdateable(physics);
 	engine->core_loop(scene);

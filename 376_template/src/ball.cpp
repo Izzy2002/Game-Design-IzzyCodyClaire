@@ -67,13 +67,13 @@ void Ball::update(double delta){
 				body->ApplyLinearImpulse(up, pos, true);
 			}
 			if(event->key.keysym.sym == SDLK_LEFT){
-				
+				loadImage("./assets/spaceshipguy_ThrustLeft.png");
 				b2Vec2 left(-0.05f, 0.0f);
 				b2Vec2 pos = body->GetPosition();
 				body->ApplyLinearImpulse(left, pos, true);
 			}
 			if(event->key.keysym.sym == SDLK_RIGHT){
-				
+				loadImage("./assets/spaceshipguy_ThrustRight.png");
 				b2Vec2 right(0.05f, 0.0f);
 				b2Vec2 pos = body->GetPosition();
 				body->ApplyLinearImpulse(right, pos, true);

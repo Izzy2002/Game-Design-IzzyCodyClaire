@@ -14,12 +14,18 @@ extern "C" {
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+#include "LEAGUE/background.h"
+#include <ball.h>
+
 
 // Setup default values for our static vars.
 Engine* Engine::instance{nullptr};
 std::mutex Engine::singleton_lock;
 std::vector<SDL_Event> Engine::events;
 lua_State* Engine::L;
+SDL_Texture *textTexture;
+TTF_Font* font;
 
 // Constructor.
 Engine::Engine(){
@@ -99,6 +105,11 @@ bool Engine::setup() {
         return false;
     }
 
+	if(TTF_Init() < 0){
+		SDL_Log("Cannot initialize TTF library: %s", SDL_GetError());
+		return false;
+	}
+
     window = SDL_CreateWindow(GAME_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         SCREEN_WIDTH_DEFAULT, SCREEN_HEIGHT_DEFAULT,
         SDL_WINDOW_SHOWN);
@@ -117,6 +128,13 @@ bool Engine::setup() {
         SDL_Log("Failed to load background image.");
         return false;
     }
+
+	font = TTF_OpenFont("lazy.ttf", 36);
+	if(!font){
+		SDL_Log("Failed to load font: %s", TTF_GetError());
+		return false;
+	}
+	
 
     L = luaL_newstate();
     luaL_openlibs(L);
@@ -148,6 +166,7 @@ void Engine::core_loop(Scene& s){
 	long double delta = 0;
 	long previousTime = SDL_GetPerformanceCounter();
 	long currentTime = previousTime;
+	int fuel = 0;
 
 	while(running){
 		// Get events (note SDL2 won't draw a window if we don't at least
@@ -163,19 +182,37 @@ void Engine::core_loop(Scene& s){
 		// Process updates.
 		auto updateables = s.getUpdateables();
 		for(auto obj = updateables.begin(); obj != updateables.end(); ++obj){
+			// if (dynamic_cast<Ball*>(&obj->get())) {
+			// 	fuel = dynamic_cast<Ball*>(&obj->get())->getFuel();
+			// 	std::cout << fuel << std::endl;
+			// }
+
+			//THIS IS BROKEN AND REFERENCE TO SOME CODE CODY HAS
+			
 			obj->get().update(delta);
 		}
+	// const char *fuelText = "Fuel: " + fuel;
+	SDL_Color textColor = {255, 255, 255};
+	SDL_Surface* textSurface = TTF_RenderText_Solid(font, "Fuel: ", textColor);
+	textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+	SDL_Rect dest = {100, 100, textSurface->w, textSurface->h};
+
+	
+	
 
 		// Render outputs.
 		SDL_SetRenderDrawColor(renderer, BACKGROUND_COLOR);
 		SDL_RenderClear(renderer);
 		
 		SDL_RenderCopy(renderer, backgroundTexture, NULL, &backgroundRect);
+		SDL_RenderCopy(renderer, textTexture, NULL, &dest);
 		auto drawables = s.getDrawables();
 		for(auto obj = drawables.begin(); obj != drawables.end(); ++obj){
 			obj->get().draw(renderer);
 		} 
 		SDL_RenderPresent(renderer);
+		SDL_DestroyTexture(textTexture);
+		SDL_FreeSurface(textSurface);
 
 		// What is going on here???
 		// SDL_GetPerformanceFrequency() is a platform-specific counter.  It returns the
@@ -226,9 +263,11 @@ lua_State* Engine::getLuaState(){
  * Cleanup the memory we used.
  */
 void Engine::shutdown(){
+	TTF_CloseFont(font);
 	lua_close(Engine::L);
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	IMG_Quit();
+	TTF_Quit();
 	SDL_Quit();
 }

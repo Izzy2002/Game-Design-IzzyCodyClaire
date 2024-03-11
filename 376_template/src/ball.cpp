@@ -24,7 +24,7 @@ Ball::Ball(PhysicsWorld* physics, float x, float y){
 	body = physics->addBody(bodyDef);
 	// Need a shape
 	b2PolygonShape boxShape;
-	boxShape.SetAsBox(.32f,.32f);
+	boxShape.SetAsBox(.2f,.2f);
 	// b2CircleShape ballShape;
 	// ballShape.m_radius=0.16f;
 	// Must apply a fixture.  Fixes shape and other properties to it.

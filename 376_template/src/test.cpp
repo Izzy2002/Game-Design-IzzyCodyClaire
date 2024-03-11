@@ -5,6 +5,7 @@
 #include "LEAGUE/engine.h"
 #include "LEAGUE/physics.h"
 #include "ball.h"
+#include "platform.h"
 
 float W2P = 100;
 float P2W = 0.01;
@@ -49,6 +50,16 @@ int main(int argc, char** argv){
 		scene.addUpdateable(*b);
 		scene.addDrawable(*b);
 	}
+
+	float platformLocation = 4.8;
+	for(int i=0; i<3; ++i){
+		Platform* landingpad = new Platform(&physics, platformLocation + (i*.15), -2);
+		scene.addDrawable(*landingpad);
+	}
+	// Platform* landingpad = new Platform(&physics, 5, -2);
+	// Platform* landingpad2 = new Platform(&physics, 5.2, -2);
+	// scene.addDrawable(*landingpad);
+	// scene.addDrawable(*landingpad2);
 	
 
 	scene.addUpdateable(physics);

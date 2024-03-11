@@ -2,7 +2,7 @@
 CXX := g++
 # Compiler flags
 CXXFLAGS := -std=c++11 -Wall -I./include -g
-LDFLAGS := -L./lib -lm -lSDL2 -lSDL2_image -llua -msse4.1 -lbox2d
+LDFLAGS := -L./lib -lm -lSDL2 -lSDL2_image -llua -msse4.1 -lbox2d -lSDL2_ttf
 
 # Directories
 SRC_DIR := ./src

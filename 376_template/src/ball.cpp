@@ -60,29 +60,40 @@ void Ball::update(double delta){
 	for(auto event=events.begin(); event!=events.end(); ++event){
 		if(event->type == SDL_KEYDOWN){
 			if(event->key.keysym.sym == SDLK_SPACE){
-				b2Vec2 up(0.0f, 0.01f);
+				b2Vec2 up(0.0f, 1.0f);
 				b2Vec2 pos = body->GetPosition();
-				pos.x += 0.1;
 				body->ApplyLinearImpulse(up, pos, true);
-				body->ApplyTorque(5.0f, true);
+				// body->ApplyTorque(5.0f, true);
+			}
+			if(event->key.keysym.sym == SDLK_LEFT){
+				b2Vec2 left(-0.5f, 0.0f);
+				b2Vec2 pos = body->GetPosition();
+				body->ApplyLinearImpulse(left, pos, true);
+			}
+			if(event->key.keysym.sym == SDLK_RIGHT){
+				b2Vec2 right(0.5f, 0.0f);
+				b2Vec2 pos = body->GetPosition();
+				body->ApplyLinearImpulse(right, pos, true);
 			}
 		}
-		if(event->type == SDL_MOUSEBUTTONUP){
-			b2Vec2 pos = body->GetPosition();
-			int temp, tempY;
-			SDL_GetMouseState(&temp, &tempY);
-			float x = (float)temp * .01;
-			float y = - (float)tempY * .01;
-			std::cout << x << ", " << y << std::endl;
-			std::cout << "Left side: " << pos.x - .2 << std::endl;
-			std::cout << "Right side: " << pos.x + .2 << std::endl;
-			std::cout << "Top side: " << pos.y +.18 << std::endl;
-			std::cout << "Bottom side: " << pos.y -.18 << std::endl;
-			if(x > pos.x - .2 && x < pos.x + .2 && y > pos.y -.18 && y < pos.y + .18){
-				std::cout << x << ", " << y << std::endl;
-				delete bodyDef;
-				SDL_DestroyTexture(texture);
-			}
+		//old deletion code
+
+		// if(event->type == SDL_MOUSEBUTTONUP){
+		// 	b2Vec2 pos = body->GetPosition();
+		// 	int temp, tempY;
+		// 	SDL_GetMouseState(&temp, &tempY);
+		// 	float x = (float)temp * .01;
+		// 	float y = - (float)tempY * .01;
+		// 	std::cout << x << ", " << y << std::endl;
+		// 	std::cout << "Left side: " << pos.x - .2 << std::endl;
+		// 	std::cout << "Right side: " << pos.x + .2 << std::endl;
+		// 	std::cout << "Top side: " << pos.y +.18 << std::endl;
+		// 	std::cout << "Bottom side: " << pos.y -.18 << std::endl;
+		// 	if(x > pos.x - .2 && x < pos.x + .2 && y > pos.y -.18 && y < pos.y + .18){
+		// 		std::cout << x << ", " << y << std::endl;
+		// 		delete bodyDef;
+		// 		SDL_DestroyTexture(texture);
+		// 	}
 
 
 			// b2Transform t;
@@ -99,7 +110,6 @@ void Ball::update(double delta){
 			
 		}
 	}	
-}
 
 void Ball::draw(SDL_Renderer* renderer){
 	SDL_Rect dest;

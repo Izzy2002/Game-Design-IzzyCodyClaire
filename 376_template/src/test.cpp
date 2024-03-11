@@ -44,16 +44,12 @@ int main(int argc, char** argv){
 	rightBox.SetAsBox(1.0f, 50.0f);
 	right->CreateFixture(&rightBox, 1.0f);
 
-	for(int i=0; i<7; ++i){
-		Ball* b = new Ball(&physics, i * P2W, -6 * P2W);
+	for(int i=0; i<1; ++i){
+		Ball* b = new Ball(&physics, 1, -6);
 		scene.addUpdateable(*b);
 		scene.addDrawable(*b);
 	}
-	// for(int i=0; i<7; ++i){
-	// 	Ball* b = new Ball(&physics, i * P2W, -5 * P2W);
-	// 	scene.addUpdateable(*b);
-	// 	scene.addDrawable(*b);
-	// }
+	
 
 	scene.addUpdateable(physics);
 	engine->core_loop(scene);

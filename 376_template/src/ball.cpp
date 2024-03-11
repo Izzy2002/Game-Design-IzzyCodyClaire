@@ -14,7 +14,7 @@ Ball::Ball(PhysicsWorld* physics, float x, float y){
 	std::uniform_int_distribution<int> distribution(0, 10);
 
 	// Generate a random number between 0 and RAND_MAX
-	loadImage("./assets/randombox.png");
+	loadImage("./assets/spaceshipguy.png");
 	// Need a body definition before we can make a body
 	bodyDef = new b2BodyDef();
 	bodyDef->gravityScale = .05f;
@@ -24,7 +24,7 @@ Ball::Ball(PhysicsWorld* physics, float x, float y){
 	body = physics->addBody(bodyDef);
 	// Need a shape
 	b2PolygonShape boxShape;
-	boxShape.SetAsBox(.2f,.18f);
+	boxShape.SetAsBox(.32f,.32f);
 	// b2CircleShape ballShape;
 	// ballShape.m_radius=0.16f;
 	// Must apply a fixture.  Fixes shape and other properties to it.

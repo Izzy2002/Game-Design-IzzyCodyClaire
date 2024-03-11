@@ -62,34 +62,68 @@ std::vector<SDL_Event> Engine::getEvents(){
  * @return bool Whether or not the needed libraries could be
  *              started.
  */
-bool Engine::setup(){
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		SDL_Log("Cannot init video: %s", SDL_GetError());
-		return false;
-	}
+ 
+ bool Engine::loadBackgroundImage(const std::string& imagePath) {
+    // Load the background image
+    SDL_Surface* loadedSurface = IMG_Load(imagePath.c_str());
+    if (!loadedSurface) {
+        SDL_Log("Failed to load background image %s: %s", imagePath.c_str(), IMG_GetError());
+        return false;
+    }
 
-	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
-		SDL_Log("Cannot initialize image library: %s", SDL_GetError());
-		return false;
-	}
+    // Convert surface to texture
+    backgroundTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+    if (!backgroundTexture) {
+        SDL_Log("Failed to create texture from background image: %s", SDL_GetError());
+        SDL_FreeSurface(loadedSurface);
+        return false;
+    }
 
-	window = SDL_CreateWindow(GAME_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			SCREEN_WIDTH_DEFAULT, SCREEN_HEIGHT_DEFAULT,
-			SDL_WINDOW_SHOWN);
-	if(!window){
-		SDL_Log("FAILED to create window: %s", SDL_GetError());
-		IMG_Quit();
-		SDL_Quit();
-		return false;
-	}
-	int flags = SDL_RENDERER_ACCELERATED;
-	renderer = SDL_CreateRenderer(window, -1, flags);
+    // Get the dimensions of the background image
+    SDL_QueryTexture(backgroundTexture, NULL, NULL, &backgroundRect.w, &backgroundRect.h);
 
-	L = luaL_newstate();
-	luaL_openlibs(L);
+    // Clean up the loaded surface
+    SDL_FreeSurface(loadedSurface);
 
-	return true;
+    return true;
 }
+
+bool Engine::setup() {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        SDL_Log("Cannot init video: %s", SDL_GetError());
+        return false;
+    }
+
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+        SDL_Log("Cannot initialize image library: %s", SDL_GetError());
+        return false;
+    }
+
+    window = SDL_CreateWindow(GAME_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        SCREEN_WIDTH_DEFAULT, SCREEN_HEIGHT_DEFAULT,
+        SDL_WINDOW_SHOWN);
+    if (!window) {
+        SDL_Log("FAILED to create window: %s", SDL_GetError());
+        IMG_Quit();
+        SDL_Quit();
+        return false;
+    }
+
+    int flags = SDL_RENDERER_ACCELERATED;
+    renderer = SDL_CreateRenderer(window, -1, flags);
+
+    // Load the background image
+    if (!loadBackgroundImage("assets/NightBackground.png")) {
+        SDL_Log("Failed to load background image.");
+        return false;
+    }
+
+    L = luaL_newstate();
+    luaL_openlibs(L);
+
+    return true;
+}
+
 
 /**
  * Game objects will need to access the renderer to draw.
@@ -135,6 +169,8 @@ void Engine::core_loop(Scene& s){
 		// Render outputs.
 		SDL_SetRenderDrawColor(renderer, BACKGROUND_COLOR);
 		SDL_RenderClear(renderer);
+		
+		SDL_RenderCopy(renderer, backgroundTexture, NULL, &backgroundRect);
 		auto drawables = s.getDrawables();
 		for(auto obj = drawables.begin(); obj != drawables.end(); ++obj){
 			obj->get().draw(renderer);
@@ -196,4 +232,3 @@ void Engine::shutdown(){
 	IMG_Quit();
 	SDL_Quit();
 }
-

@@ -17,6 +17,7 @@ Ball::Ball(PhysicsWorld* physics, float x, float y){
 	loadImage("./assets/randombox.png");
 	// Need a body definition before we can make a body
 	bodyDef = new b2BodyDef();
+	bodyDef->gravityScale = .05f;
 	bodyDef->type = b2_dynamicBody;
 	bodyDef->position.Set(x, y);
 	// Physics engine makes the body for us and returns a pointer to it
@@ -60,18 +61,18 @@ void Ball::update(double delta){
 	for(auto event=events.begin(); event!=events.end(); ++event){
 		if(event->type == SDL_KEYDOWN){
 			if(event->key.keysym.sym == SDLK_SPACE){
-				b2Vec2 up(0.0f, 1.0f);
+				b2Vec2 up(0.0f, .1f);
 				b2Vec2 pos = body->GetPosition();
 				body->ApplyLinearImpulse(up, pos, true);
 				// body->ApplyTorque(5.0f, true);
 			}
 			if(event->key.keysym.sym == SDLK_LEFT){
-				b2Vec2 left(-0.5f, 0.0f);
+				b2Vec2 left(-0.05f, 0.0f);
 				b2Vec2 pos = body->GetPosition();
 				body->ApplyLinearImpulse(left, pos, true);
 			}
 			if(event->key.keysym.sym == SDLK_RIGHT){
-				b2Vec2 right(0.5f, 0.0f);
+				b2Vec2 right(0.05f, 0.0f);
 				b2Vec2 pos = body->GetPosition();
 				body->ApplyLinearImpulse(right, pos, true);
 			}

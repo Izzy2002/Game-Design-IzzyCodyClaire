@@ -61,22 +61,28 @@ void Ball::update(double delta){
 	for(auto event=events.begin(); event!=events.end(); ++event){
 		if(event->type == SDL_KEYDOWN){
 			if(event->key.keysym.sym == SDLK_SPACE){
+				loadImage("./assets/spaceshipguy_thrustersOn.png");
 				b2Vec2 up(0.0f, .1f);
 				b2Vec2 pos = body->GetPosition();
 				body->ApplyLinearImpulse(up, pos, true);
-				// body->ApplyTorque(5.0f, true);
 			}
 			if(event->key.keysym.sym == SDLK_LEFT){
+				
 				b2Vec2 left(-0.05f, 0.0f);
 				b2Vec2 pos = body->GetPosition();
 				body->ApplyLinearImpulse(left, pos, true);
 			}
 			if(event->key.keysym.sym == SDLK_RIGHT){
+				
 				b2Vec2 right(0.05f, 0.0f);
 				b2Vec2 pos = body->GetPosition();
 				body->ApplyLinearImpulse(right, pos, true);
 			}
+		} 
+		else if (event-> type == SDL_KEYUP){
+			loadImage("./assets/spaceshipguy.png");
 		}
+		
 		//old deletion code
 
 		// if(event->type == SDL_MOUSEBUTTONUP){

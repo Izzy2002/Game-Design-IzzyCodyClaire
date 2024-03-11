@@ -2,6 +2,7 @@
 #define		__H__ENGINE__LEAGUE__
 
 #include <mutex>
+#include "LEAGUE/background.h"
 
 extern "C" {
 	#include <lua.h>
@@ -19,7 +20,7 @@ class Engine {
 
 		// Provides the instance when called.
 		static Engine* getInstance();
-
+		bool loadBackgroundImage(const std::string& imagePath);
 		bool setup();
 		void core_loop(Scene& s);
 		void shutdown();
@@ -47,6 +48,9 @@ class Engine {
 		
 		// The renderer; in charge of all drawing
 		SDL_Renderer* renderer;
+		Background background;
+		SDL_Texture* backgroundTexture;
+    		SDL_Rect backgroundRect;
 
 	protected:
 		// Limit the scope of the constructor and destructor so it can't
@@ -54,4 +58,4 @@ class Engine {
 		Engine();
 		~Engine();
 };
-#endif
+#endif 
